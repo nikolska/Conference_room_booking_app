@@ -22,4 +22,5 @@ from main_app.views import *
 urlpatterns = [
     path('', main_page_view, name='main_page'),
     path('admin/', admin.site.urls),
+    path('room/new/', add_new_room, name='add_new_room'),
 ]

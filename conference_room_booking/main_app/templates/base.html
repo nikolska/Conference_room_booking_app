@@ -10,6 +10,7 @@
         }
         .content {
             min-height: calc(100vh - 80px);
+            padding: 0 20px;
         }
         .header {
             padding: 5px;
@@ -36,7 +37,7 @@
 
     <div class="header">
         <a class='head_a' href="">Conference rooms</a>
-        <a class='head_a' href="">Add new conference room</a>
+        <a class='head_a' href="{% url 'add_new_room' %}">Add new conference room</a>
     </div>
 
     <div class="content">{% block content %}{% endblock %}</div>
