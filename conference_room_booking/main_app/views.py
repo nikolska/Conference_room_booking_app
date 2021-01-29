@@ -1,8 +1,10 @@
+from datetime import date
+
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.urls import reverse
 
-from .models import Room
+from .models import Room, Reservation
 
 
 def rooms_list_view(request):
@@ -29,6 +31,9 @@ def room_modify_view(request, room_id):
             return render(request, 'room_modify.html', ctx)
         if name != room.name and Room.objects.filter(name=name):
             ctx = {'message': 'Conference room with this name is already exist!'}
+            return render(request, 'room_modify.html', ctx)
+        if len(name) > 255:
+            ctx = {'message': 'Room name is too long. Must be less than 255 characters!'}
             return render(request, 'room_modify.html', ctx)
         if not capacity:
             capacity = 0
@@ -57,7 +62,29 @@ def room_delete_view(request, room_id):
 
 
 def room_reserve_view(request, room_id):
-    pass
+    # room = Room.objects.get(pk=room_id)
+    room = get_object_or_404(Room, pk=room_id)
+    if request.method == 'GET':
+        ctx = {'room': room}
+        return render(request, 'room_reservation.html', ctx)
+    elif request.method == 'POST':
+        reservation_date = request.POST.get('date')
+        comment = request.POST.get('comment')
+        if not reservation_date:
+            ctx = {'message': 'Reservation date cannot be empty!'}
+            return render(request, 'room_reservation.html', ctx)
+        if reservation_date < str(date.today()):
+            ctx = {'message': 'Reservation date cannot be less than today!'}
+            return render(request, 'room_reservation.html', ctx)
+        if Reservation.objects.filter(room=room, date=reservation_date):
+            ctx = {'message': 'This conference room is already booked on this day!'}
+            return render(request, "room_reservation.html", ctx)
+        Reservation.objects.create(
+            room=room,
+            date=reservation_date,
+            comment=comment
+        )
+        return HttpResponseRedirect(reverse('rooms_list'))
 
 
 def add_new_room(request):
@@ -73,9 +100,11 @@ def add_new_room(request):
         if Room.objects.filter(name=name):
             ctx = {'message': 'Conference room with this name is already exist!'}
             return render(request, 'add_new_room.html', ctx)
+        if len(name) > 255:
+            ctx = {'message': 'Room name is too long. Must be less than 255 characters!'}
+            return render(request, 'add_new_room.html', ctx)
         if not capacity:
             capacity = 0
-
         if int(capacity) < 0:
             ctx = {'message': 'Room capacity must not be less than zero!'}
             return render(request, 'add_new_room.html', ctx)

@@ -12,7 +12,7 @@
 <form action="" method="POST">
     {% csrf_token %}
     <label for="name"></label>Room name<br>
-    <input type="text" id="name" name="name" value="{{ room.name }}"><br>
+    <input type="text" id="name" name="name" value="{{ room.name }}" maxlength="255"><br>
 
     <label for="capacity">Room capacity</label><br>
     <input type="number"  min="0" id="capacity" name="capacity" value="{{ room.capacity }}"><br>
