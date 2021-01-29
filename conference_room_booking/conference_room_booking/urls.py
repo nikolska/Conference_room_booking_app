@@ -20,12 +20,11 @@ from main_app.views import *
 
 
 urlpatterns = [
-    path('', main_page_view, name='main_page'),
+    path('', rooms_list_view, name='rooms_list'),
     path('admin/', admin.site.urls, name='admin'),
     path('room/<int:room_id>', room_details_view, name='room_details'),
     path('/room/modify/<int:room_id>', room_modify_view, name='room_modify'),
     path('/room/delete/<int:room_id>', room_delete_view, name='room_delete'),
     path('/room/reserve/<int:room_id>', room_reserve_view, name='room_reserve'),
     path('room/new/', add_new_room, name='add_new_room'),
-    path('rooms/', rooms_list_view, name='rooms_list'),
 ]
