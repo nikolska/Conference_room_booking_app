@@ -1,5 +1,5 @@
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_list_or_404
 from django.urls import reverse
 
 from .models import Room
@@ -7,6 +7,28 @@ from .models import Room
 
 def main_page_view(request):
     return render(request, 'home_page.html')
+
+
+def rooms_list_view(request):
+    rooms_list = get_list_or_404(Room)
+    ctx = {'rooms_list': rooms_list}
+    return render(request, 'rooms_list.html', ctx)
+
+
+def room_details_view(request, room_id):
+    pass
+
+
+def room_modify_view(request, room_id):
+    pass
+
+
+def room_delete_view(request, room_id):
+    pass
+
+
+def room_reserve_view(request, room_id):
+    pass
 
 
 def add_new_room(request):

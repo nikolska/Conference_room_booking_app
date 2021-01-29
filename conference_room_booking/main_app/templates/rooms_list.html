@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Conferences rooms{% endblock %}
+
+{% block content %}
+<table>
+    <tr>
+        <th>Room name</th>
+        <th>Room capacity</th>
+        <th>Projector availability</th>
+        <th>Room availability</th>
+        <th>Book room</th>
+        <th>Edit room</th>
+        <th>Delete room</th>
+    </tr>
+    {% if rooms_list %}
+        {% for room in rooms_list %}
+            <tr align="center">
+                <td><a href="{% url 'room_details' room.id %}">{{ room.name }}</a></td>
+                <td>{{ room.capacity }}</td>
+                <td>
+                    {% if room.projector == True %}
+                        &#9745;
+                    {% else %}
+                        &#9746;
+                    {% endif %}
+                </td>
+                <td></td>
+                <td><a href="{%  url 'room_reserve' room.id %}">&#10065;</a></td>
+                <td><a href="{%  url 'room_modify' room.id %}">&#10065;</a></td>
+                <td><a href="{%  url 'room_delete' room.id %}">&#10065;</a></td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <h3 style="color: red">No conference rooms available.</h3>
+    {% endif %}
+</table>
+
+{% endblock %}
