@@ -20,13 +20,19 @@
                 <td><a href="{% url 'room_details' room.id %}">{{ room.name }}</a></td>
                 <td>{{ room.capacity }}</td>
                 <td>
-                    {% if room.projector == True %}
+                    {% if room.projector %}
                         &#9745;
                     {% else %}
                         &#9746;
                     {% endif %}
                 </td>
-                <td></td>
+                <td>
+                    {% if room.reserved %}
+                        &#9746;
+                    {% else %}
+                        &#9745;
+                    {% endif %}
+                </td>
                 <td><a href="{%  url 'room_reserve' room.id %}">&#10065;</a></td>
                 <td><a href="{%  url 'room_modify' room.id %}">&#10065;</a></td>
                 <td><a href="{%  url 'room_delete' room.id %}">&#10065;</a></td>

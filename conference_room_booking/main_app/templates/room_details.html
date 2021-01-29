@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+
+{% block title %}{{ room.name }}{% endblock %}
+
+{% block content %}
+
+<table>
+    <tr>
+        <th>Room name</th>
+        <th>Room capacity</th>
+        <th>Projector availability</th>
+        <th>Room availability</th>
+        <th>Book room</th>
+        <th>Edit room</th>
+        <th>Delete room</th>
+    </tr>
+    <tr align="center">
+        <td>{{ room.name }}</td>
+        <td>{{ room.capacity }}</td>
+        <td>
+            {% if room.projector %}
+                &#9745;
+            {% else %}
+                &#9746;
+            {% endif %}
+        </td>
+        <td>
+            {% if room.reserved %}
+                &#9746;
+            {% else %}
+                &#9745;
+            {% endif %}
+        </td>
+        <td><a href="{%  url 'room_reserve' room.id %}">&#10065;</a></td>
+        <td><a href="{%  url 'room_modify' room.id %}">&#10065;</a></td>
+        <td><a href="{%  url 'room_delete' room.id %}">&#10065;</a></td>
+    </tr>
+</table><br>
+
+{% if reservations %}
+    <table>
+        <tr>
+            <th>Reservation date</th>
+            <th>Reservation comment</th>
+        </tr>
+        {% for reservation in reservations%}
+            <tr align="center">
+                <td>{{ reservation.date }}</td>
+                <td>{{ reservation.comment }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <h3>No reservations for this room.</h3>
+{% endif %}
+
+{% endblock %}

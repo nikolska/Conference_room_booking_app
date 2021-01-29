@@ -9,12 +9,21 @@ from .models import Room, Reservation
 
 def rooms_list_view(request):
     rooms_list = get_list_or_404(Room)
+    for room in rooms_list:
+        reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
+        room.reserved = date.today() in reservation_dates
     ctx = {'rooms_list': rooms_list}
     return render(request, 'rooms_list.html', ctx)
 
 
 def room_details_view(request, room_id):
-    pass
+    room = get_object_or_404(Room, pk=room_id)
+    reservations = Reservation.objects.filter(room=room)
+    ctx = {
+        'room': room,
+        'reservations': reservations
+    }
+    return render(request, 'room_details.html', ctx)
 
 
 def room_modify_view(request, room_id):
@@ -62,7 +71,6 @@ def room_delete_view(request, room_id):
 
 
 def room_reserve_view(request, room_id):
-    # room = Room.objects.get(pk=room_id)
     room = get_object_or_404(Room, pk=room_id)
     if request.method == 'GET':
         ctx = {'room': room}
