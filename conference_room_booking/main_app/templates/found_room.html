@@ -1,20 +1,21 @@
 {% extends 'base.html' %}
 
 
-{% block title %}Conferences rooms{% endblock %}
+{% block title %}Found conference room{% endblock %}
 
 {% block content %}
-<table>
-    <tr>
-        <th>Room name</th>
-        <th>Room capacity</th>
-        <th>Projector availability</th>
-        <th>Room availability</th>
-        <th>Book room</th>
-        <th>Edit room</th>
-        <th>Delete room</th>
-    </tr>
-    {% if rooms_list %}
+
+{% if rooms_list %}
+    <table>
+        <tr>
+            <th>Room name</th>
+            <th>Room capacity</th>
+            <th>Projector availability</th>
+            <th>Room availability</th>
+            <th>Book room</th>
+            <th>Edit room</th>
+            <th>Delete room</th>
+        </tr>
         {% for room in rooms_list %}
             <tr align="center">
                 <td><a href="{% url 'room_details' room.id %}">{{ room.name }}</a></td>
@@ -38,24 +39,9 @@
                 <td><a href="{%  url 'room_delete' room.id %}">&#10065;</a></td>
             </tr>
         {% endfor %}
-    {% else %}
-        <h3 style="color: red">No conference rooms available.</h3>
-    {% endif %}
-</table><br><br>
+    </table>
+{% else %}
+    <h3 style="color: red">No conference rooms available for the given search criteria!</h3>
+{% endif %}
 
-<form action="/search" method="GET">
-    {% csrf_token %}
-    <h3>Search conference room</h3>
-
-    <label for="name">Room name</label><br>
-    <input type="text" id="name" name="name" maxlength="255"><br>
-
-    <label for="min_capacity">Minimum room capacity</label><br>
-    <input type="number" min="0" id="min_capacity" name="min_capacity"><br>
-
-    <label for="projector">Projector availability</label><br>
-    <input type="checkbox" id="projector" name="projector"><br><br>
-
-    <input type="submit" value="Search">
-</form>
 {% endblock %}

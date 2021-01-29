@@ -19,6 +19,8 @@ def rooms_list_view(request):
 def room_details_view(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     reservations = Reservation.objects.filter(room=room)
+    reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
+    room.reserved = date.today() in reservation_dates
     ctx = {
         'room': room,
         'reservations': reservations
@@ -73,7 +75,11 @@ def room_delete_view(request, room_id):
 def room_reserve_view(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     if request.method == 'GET':
-        ctx = {'room': room}
+        reservations = Reservation.objects.filter(room=room)
+        ctx = {
+            'room': room,
+            'reservations': reservations
+        }
         return render(request, 'room_reservation.html', ctx)
     elif request.method == 'POST':
         reservation_date = request.POST.get('date')
@@ -126,3 +132,29 @@ def add_new_room(request):
             projector=projector
         )
         return HttpResponseRedirect(reverse('main_page'))
+
+
+def search_room_view(request):
+    rooms_list = Room.objects.all()
+    name = request.GET.get('name')
+    min_capacity = request.GET.get('min_capacity')
+    min_capacity = int(min_capacity) if min_capacity else 0
+    projector = request.GET.get('projector')
+    if projector == 'on':
+        projector = True
+    else:
+        projector = False
+    if name:
+        rooms_list = rooms_list.filter(name=name)
+    if min_capacity:
+        rooms_list = rooms_list.filter(capacity__gte=min_capacity)
+    if projector:
+        rooms_list = rooms_list.filter(projector=projector)
+    for room in rooms_list:
+        reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
+        room.reserved = str(date.today()) in reservation_dates
+    ctx = {
+        'rooms_list': rooms_list,
+        'date': date.today()
+    }
+    return render(request, 'found_room.html', ctx)

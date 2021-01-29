@@ -11,15 +11,33 @@
 
 <form action="" method="POST">
     {% csrf_token %}
-    <h3>Reservation {{ room.name }}</h3><br>
+    <h3>Reserve {{ room.name }}</h3>
 
     <label for="date">Date</label><br>
     <input type="date" id="date" name="date" min="2021-01-01"><br>
 
     <label for="comment"></label>Comment<br>
-    <input type="text" id="comment" name="comment"><br><br>
+    <input type="text" id="comment" name="comment"><br>
 
     <input type="submit" value="Enter">
-</form>
+</form><br>
+
+<h3>{{ room.name }} reservations</h3>
+{% if reservations %}
+    <table>
+        <tr>
+            <th>Reservation date</th>
+            <th>Reservation comment</th>
+        </tr>
+        {% for reservation in reservations%}
+            <tr align="center">
+                <td>{{ reservation.date }}</td>
+                <td>{{ reservation.comment }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <h3>No reservations for this room.</h3>
+{% endif %}
 
 {% endblock %}
