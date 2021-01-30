@@ -8,7 +8,7 @@ from .models import Room, Reservation
 
 
 def rooms_list_view(request):
-    rooms_list = get_list_or_404(Room)
+    rooms_list = get_list_or_404(Room.objects.order_by('name'))
     for room in rooms_list:
         reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
         room.reserved = date.today() in reservation_dates
