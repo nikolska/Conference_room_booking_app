@@ -18,9 +18,7 @@ def rooms_list_view(request):
 
 def room_details_view(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
-    reservations = Reservation.objects.filter(room=room)
-    reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
-    room.reserved = date.today() in reservation_dates
+    reservations = room.reservation_set.filter(date__gte=str(date.today())).order_by('date')
     ctx = {
         'room': room,
         'reservations': reservations
