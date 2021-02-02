@@ -125,7 +125,8 @@ class AddNewRoomView(View):
     def post(self, request, *args, **kwargs):
         name = request.POST.get('name')
         capacity = request.POST.get('capacity')
-        projector = request.POST.get('projector')
+        capacity = int(capacity) if capacity else 0
+        projector = request.POST.get('projector') == 'on'
         if not name:
             ctx = {'message': 'Name can not be empty!'}
             return render(request, 'add_new_room.html', ctx)
@@ -135,21 +136,15 @@ class AddNewRoomView(View):
         if len(name) > 255:
             ctx = {'message': 'Room name is too long. Must be less than 255 characters!'}
             return render(request, 'add_new_room.html', ctx)
-        if not capacity:
-            capacity = 0
-        if int(capacity) < 0:
+        if capacity < 0:
             ctx = {'message': 'Room capacity must not be less than zero!'}
             return render(request, 'add_new_room.html', ctx)
-        if projector == 'on':
-            projector = True
-        else:
-            projector = False
         Room.objects.create(
             name=name,
             capacity=int(capacity),
             projector=projector
         )
-        return HttpResponseRedirect(reverse('main_page'))
+        return HttpResponseRedirect(reverse('rooms_list'))
 
 
 class SearchRoomView(View):
@@ -158,11 +153,7 @@ class SearchRoomView(View):
         name = request.GET.get('name')
         min_capacity = request.GET.get('min_capacity')
         min_capacity = int(min_capacity) if min_capacity else 0
-        projector = request.GET.get('projector')
-        if projector == 'on':
-            projector = True
-        else:
-            projector = False
+        projector = request.GET.get('projector') == 'on'
         if name:
             rooms_list = rooms_list.filter(name=name)
         if min_capacity:
