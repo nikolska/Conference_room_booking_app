@@ -11,9 +11,11 @@ from .models import Room, Reservation
 class RoomsListView(View):
     def get(self, request, *args, **kwargs):
         rooms_list = get_list_or_404(Room.objects.order_by('name'))
+
         for room in rooms_list:
             reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
             room.reserved = date.today() in reservation_dates
+
         ctx = {'rooms_list': rooms_list}
         return render(request, 'rooms_list.html', ctx)
 
@@ -43,7 +45,9 @@ class RoomModifyView(View):
         room = self.get_room(**kwargs)
         name = request.POST.get('name')
         capacity = request.POST.get('capacity')
-        projector = request.POST.get('projector')
+        capacity = int(capacity) if capacity else 0
+        projector = request.POST.get('projector') == 'on'
+
         if not name:
             ctx = {'message': 'Name can not be empty!'}
             return render(request, 'room_modify.html', ctx)
@@ -53,15 +57,10 @@ class RoomModifyView(View):
         if len(name) > 255:
             ctx = {'message': 'Room name is too long. Must be less than 255 characters!'}
             return render(request, 'room_modify.html', ctx)
-        if not capacity:
-            capacity = 0
-        if int(capacity) < 0:
+        if capacity < 0:
             ctx = {'message': 'Room capacity must not be less than zero!'}
             return render(request, 'room_modify.html', ctx)
-        if projector == 'on':
-            projector = True
-        else:
-            projector = False
+
         room.name = name
         room.capacity = capacity
         room.projector = projector
@@ -101,6 +100,7 @@ class RoomReserveView(View):
         room = self.get_room(**kwargs)
         reservation_date = request.POST.get('date')
         comment = request.POST.get('comment')
+
         if not reservation_date:
             ctx = {'message': 'Reservation date cannot be empty!'}
             return render(request, 'room_reservation.html', ctx)
@@ -110,6 +110,7 @@ class RoomReserveView(View):
         if Reservation.objects.filter(room=room, date=reservation_date):
             ctx = {'message': 'This conference room is already booked on this day!'}
             return render(request, "room_reservation.html", ctx)
+
         Reservation.objects.create(
             room=room,
             date=reservation_date,
@@ -127,6 +128,7 @@ class AddNewRoomView(View):
         capacity = request.POST.get('capacity')
         capacity = int(capacity) if capacity else 0
         projector = request.POST.get('projector') == 'on'
+
         if not name:
             ctx = {'message': 'Name can not be empty!'}
             return render(request, 'add_new_room.html', ctx)
@@ -139,6 +141,7 @@ class AddNewRoomView(View):
         if capacity < 0:
             ctx = {'message': 'Room capacity must not be less than zero!'}
             return render(request, 'add_new_room.html', ctx)
+
         Room.objects.create(
             name=name,
             capacity=int(capacity),
@@ -154,15 +157,18 @@ class SearchRoomView(View):
         min_capacity = request.GET.get('min_capacity')
         min_capacity = int(min_capacity) if min_capacity else 0
         projector = request.GET.get('projector') == 'on'
+
         if name:
             rooms_list = rooms_list.filter(name=name)
         if min_capacity:
             rooms_list = rooms_list.filter(capacity__gte=min_capacity)
         if projector:
             rooms_list = rooms_list.filter(projector=projector)
+
         for room in rooms_list:
             reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
             room.reserved = str(date.today()) in reservation_dates
+            
         ctx = {
             'rooms_list': rooms_list,
             'date': date.today()
