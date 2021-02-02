@@ -168,7 +168,7 @@ class SearchRoomView(View):
         for room in rooms_list:
             reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
             room.reserved = str(date.today()) in reservation_dates
-            
+
         ctx = {
             'rooms_list': rooms_list,
             'date': date.today()
