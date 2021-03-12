@@ -4,58 +4,66 @@
 {% block title %}Conferences rooms{% endblock %}
 
 {% block content %}
-<table>
-    <tr>
-        <th>Room name</th>
-        <th>Room capacity</th>
-        <th>Projector availability</th>
-        <th>Room availability</th>
-        <th>Book room</th>
-        <th>Edit room</th>
-        <th>Delete room</th>
-    </tr>
-    {% if rooms_list %}
-        {% for room in rooms_list %}
-            <tr align="center">
-                <td><a href="{% url 'room_details' room.id %}">{{ room.name }}</a></td>
-                <td>{{ room.capacity }}</td>
-                <td>
-                    {% if room.projector %}
-                        &#9745;
-                    {% else %}
-                        &#9746;
-                    {% endif %}
-                </td>
-                <td>
-                    {% if room.reserved %}
-                        &#9746;
-                    {% else %}
-                        &#9745;
-                    {% endif %}
-                </td>
-                <td><a href="{%  url 'room_reserve' room.id %}">&#10065;</a></td>
-                <td><a href="{%  url 'room_modify' room.id %}">&#10065;</a></td>
-                <td><a href="{%  url 'room_delete' room.id %}">&#10065;</a></td>
+
+<div class="start-page">
+    <div>
+        <table>
+            <tr>
+                <th>Room name</th>
+                <th>Room capacity</th>
+                <th>Projector availability</th>
+                <th>Room availability</th>
+                <th>Book room</th>
+                <th>Edit room</th>
+                <th>Delete room</th>
             </tr>
-        {% endfor %}
-    {% else %}
-        <h3 style="color: red">No conference rooms available.</h3>
-    {% endif %}
-</table><br><br>
+            {% if rooms_list %}
+                {% for room in rooms_list %}
+                    <tr align="center">
+                        <td><a href="{% url 'room_details' room.id %}">{{ room.name }}</a></td>
+                        <td>{{ room.capacity }}</td>
+                        <td>
+                            {% if room.projector %}
+                                &#128505;
+                            {% else %}
+                                &#9746;
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if room.reserved %}
+                                &#9746;
+                            {% else %}
+                                &#128505;
+                            {% endif %}
+                        </td>
+                        <td><a href="{%  url 'room_reserve' room.id %}">&#10065;</a></td>
+                        <td><a href="{%  url 'room_modify' room.id %}">&#10065;</a></td>
+                        <td><a href="{%  url 'room_delete' room.id %}">&#10065;</a></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <h3 style="color: red">No conference rooms available.</h3>
+            {% endif %}
+        </table>
+    </div>
 
-<form action="/search" method="GET">
-    {% csrf_token %}
-    <h3>Search conference room</h3>
+    <div>
+        <form action="/search" method="GET">
+            {% csrf_token %}
+            <h3>Search conference room</h3>
 
-    <label for="name">Room name</label><br>
-    <input type="text" id="name" name="name" maxlength="255"><br>
+            <label for="name">Room name</label><br>
+            <input type="text" id="name" name="name" maxlength="255"><br>
 
-    <label for="min_capacity">Minimum room capacity</label><br>
-    <input type="number" min="0" id="min_capacity" name="min_capacity"><br>
+            <label for="min_capacity">Minimum room capacity</label><br>
+            <input type="number" min="0" id="min_capacity" name="min_capacity"><br>
 
-    <label for="projector">Projector availability</label><br>
-    <input type="checkbox" id="projector" name="projector"><br><br>
+            <label for="projector">Projector availability</label><br>
+            <input type="checkbox" id="projector" name="projector"><br><br>
 
-    <input type="submit" value="Search">
-</form>
+            <input type="submit" value="Search">
+        </form>
+    </div>
+</div>
+
 {% endblock %}

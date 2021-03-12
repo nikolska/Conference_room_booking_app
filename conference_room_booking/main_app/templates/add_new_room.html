@@ -5,22 +5,24 @@
 
 {% block content %}
 
-{% if message %}
-    <h3 style="color: red">{{ message }}</h3>
-{% endif %}
+<div align="center">
+    {% if message %}
+        <h3 style="color: red">{{ message }}</h3>
+    {% endif %}
 
-<form action="" method="POST">
-    {% csrf_token %}
-    <label for="name">Room name</label><br>
-    <input type="text" id="name" name="name" maxlength="255"><br>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label for="name">Room name</label><br>
+        <input type="text" id="name" name="name" maxlength="255"><br>
 
-    <label for="capacity">Room capacity</label><br>
-    <input type="number" min="0" id="capacity" name="capacity"><br>
+        <label for="capacity">Room capacity</label><br>
+        <input type="number" min="0" id="capacity" name="capacity"><br>
 
-    <label for="projector">Projector availability</label><br>
-    <input type="checkbox" id="projector" name="projector"><br><br>
+        <label for="projector">Projector availability</label><br>
+        <input type="checkbox" id="projector" name="projector"><br><br>
 
-    <input type="submit" value="Add new room">
-</form>
+        <input type="submit" value="Add new room">
+    </form>
+</div>
 
 {% endblock %}

@@ -5,39 +5,41 @@
 
 {% block content %}
 
-{% if message %}
-    <h3 style="color: red">{{ message }}</h3>
-{% endif %}
+<div align="center">
+    {% if message %}
+        <h3 style="color: red">{{ message }}</h3>
+    {% endif %}
 
-<form action="" method="POST">
-    {% csrf_token %}
-    <h3>Reserve {{ room.name }}</h3>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <h3>Reserve {{ room.name }}</h3>
 
-    <label for="date">Date</label><br>
-    <input type="date" id="date" name="date" min="2021-01-01"><br>
+        <label for="date">Date</label><br>
+        <input type="date" id="date" name="date" min="2021-01-01"><br>
 
-    <label for="comment"></label>Comment<br>
-    <input type="text" id="comment" name="comment"><br>
+        <label for="comment">Comment</label><br>
+        <input type="text" id="comment" name="comment"><br>
 
-    <input type="submit" value="Enter">
-</form><br>
+        <input type="submit" value="Enter">
+    </form><br>
 
-<h3>{{ room.name }} reservations</h3>
-{% if reservations %}
-    <table>
-        <tr>
-            <th>Reservation date</th>
-            <th>Reservation comment</th>
-        </tr>
-        {% for reservation in reservations%}
-            <tr align="center">
-                <td>{{ reservation.date }}</td>
-                <td>{{ reservation.comment }}</td>
+    <h3>{{ room.name }} reservations</h3>
+    {% if reservations %}
+        <table>
+            <tr>
+                <th>Reservation date</th>
+                <th>Reservation comment</th>
             </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <h3>No reservations for this room.</h3>
-{% endif %}
+            {% for reservation in reservations%}
+                <tr align="center">
+                    <td>{{ reservation.date }}</td>
+                    <td>{{ reservation.comment }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h3>No reservations for this room.</h3>
+    {% endif %}
+</div>
 
 {% endblock %}

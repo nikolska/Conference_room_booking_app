@@ -5,11 +5,13 @@
 
 {% block content %}
 
-<form action="" method="POST">
-    {% csrf_token %}
-    <h2>Do you really want to delete room {{ room.name }}?</h2><br>
-    <input type="submit" value="Yes">
-    <button><a href="{% url 'rooms_list' %}">No</a></button>
-</form>
+<div align="center">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <h2>Do you really want to delete room {{ room.name }}?</h2><br>
+        <input type="submit" value="Yes" name="btn">
+        <input type="submit" value="No" name="btn">
+    </form>
+</div>
 
 {% endblock %}
