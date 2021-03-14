@@ -2,8 +2,9 @@ from datetime import date
 
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, get_list_or_404, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import View
+from django.views.generic import CreateView
 
 from .models import Room, Reservation
 
