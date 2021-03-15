@@ -20,7 +20,13 @@ class ReservationCreateForm(forms.ModelForm):
         model = Reservation
         fields = ['date', 'comment']
         widgets = {
-            'date': forms.SelectDateWidget(),
+            'date': forms.DateInput(),
             'comment': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
         }
+
+
+class SearchRoomForm(forms.ModelForm):
+    class Meta:
+        model = Room
+        fields = ['name', 'capacity', 'projector']
 
