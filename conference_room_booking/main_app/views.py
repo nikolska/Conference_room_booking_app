@@ -1,12 +1,11 @@
 from datetime import date
 
-from django.contrib import messages
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from django.views.generic import View, FormView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, FormView, CreateView, UpdateView
 
-from .forms import RoomCreateForm, RoomUpdateForm
+from .forms import RoomCreateForm, RoomUpdateForm, ReservationCreateForm
 from .models import Room, Reservation
 
 
@@ -22,7 +21,7 @@ class RoomsListView(View):
         return render(request, 'rooms_list.html', ctx)
 
 
-class RoomDetailsView(View):
+class RoomDetailsView(FormView):
     def get(self, request, *args, **kwargs):
         room = get_object_or_404(Room, pk=kwargs['room_id'])
         reservations = room.reservation_set.filter(date__gte=str(date.today())).order_by('date')
@@ -59,41 +58,11 @@ class RoomDeleteView(View):
         return HttpResponseRedirect(reverse('rooms_list'))
 
 
-class RoomReserveView(View):
-    def get_room(self, **kwargs):
-        room = get_object_or_404(Room, pk=kwargs['room_id'])
-        return room
-
-    def get(self, request, *args, **kwargs):
-        room = self.get_room(**kwargs)
-        reservations = Reservation.objects.filter(room=room)
-        ctx = {
-            'room': room,
-            'reservations': reservations
-        }
-        return render(request, 'room_reservation.html', ctx)
-
-    def post(self, request, *args, **kwargs):
-        room = self.get_room(**kwargs)
-        reservation_date = request.POST.get('date')
-        comment = request.POST.get('comment')
-
-        if not reservation_date:
-            ctx = {'message': 'Reservation date cannot be empty!'}
-            return render(request, 'room_reservation.html', ctx)
-        if reservation_date < str(date.today()):
-            ctx = {'message': 'Reservation date cannot be less than today!'}
-            return render(request, 'room_reservation.html', ctx)
-        if Reservation.objects.filter(room=room, date=reservation_date):
-            ctx = {'message': 'This conference room is already booked on this day!'}
-            return render(request, "room_reservation.html", ctx)
-
-        Reservation.objects.create(
-            room=room,
-            date=reservation_date,
-            comment=comment
-        )
-        return HttpResponseRedirect(reverse('rooms_list'))
+class RoomReserveView(CreateView):
+    model = Reservation
+    template_name = 'main_app/reservation_form.html'
+    form_class = ReservationCreateForm
+    success_url = reverse_lazy('rooms_list')
 
 
 class RoomCreateView(CreateView):

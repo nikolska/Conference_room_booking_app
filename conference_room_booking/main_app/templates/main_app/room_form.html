@@ -9,7 +9,7 @@
     <form action="" method="POST">
         {% csrf_token %}
         <label for="{{ form.name.id_for_label }}">Room name:</label><br>
-        {{ form.name }}
+        {{ form.room }}
         <br><label for="{{ form.capacity.id_for_label }}">Room capacity:</label><br>
         {{ form.capacity }}
         <br><label for="{{ form.projector.id_for_label }}">Projector availability:</label>
