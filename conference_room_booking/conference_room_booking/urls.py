@@ -16,24 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 
-from main_app.views import *
+from main_app.views import (
+    RoomsListView, RoomDetailsView, RoomUpdateView, RoomDeleteView, RoomReserveView, RoomCreateView, SearchRoomView
+)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     re_path(r'^$', RoomsListView.as_view(), name='rooms_list'),
     re_path(r'^room/(?P<room_id>\d+)/$', RoomDetailsView.as_view(), name='room_details'),
-    re_path(r'^room/modify/(?P<room_id>\d+)/$', RoomModifyView.as_view(), name='room_modify'),
+    re_path(r'^room/modify/(?P<room_id>\d+)/$', RoomUpdateView.as_view(), name='room_modify'),
     re_path(r'^room/delete/(?P<room_id>\d+)/$', RoomDeleteView.as_view(), name='room_delete'),
     re_path(r'^room/reserve/(?P<room_id>\d+)/$', RoomReserveView.as_view(), name='room_reserve'),
-    re_path(r'^room/new/$', AddNewRoomView.as_view(), name='add_new_room'),
+    re_path(r'^room/new/$', RoomCreateView.as_view(), name='add_new_room'),
     re_path(r'^search/$', SearchRoomView.as_view(), name='search_room'),
-
-    # path('', rooms_list_view, name='rooms_list'),
-    # path('room/<int:room_id>', room_details_view, name='room_details'),
-    # path('room/modify/<int:room_id>', room_modify_view, name='room_modify'),
-    # path('room/delete/<int:room_id>', room_delete_view, name='room_delete'),
-    # path('room/reserve/<int:room_id>', room_reserve_view, name='room_reserve'),
-    # path('room/new/', add_new_room, name='add_new_room'),
-    # path('search/', search_room_view, name='search_room'),
 ]

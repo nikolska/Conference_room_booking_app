@@ -1,11 +1,12 @@
 from datetime import date
 
+from django.contrib import messages
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from django.views.generic import View
-from django.views.generic import CreateView
+from django.views.generic import View, FormView, CreateView, UpdateView, DeleteView
 
+from .forms import RoomCreateForm, RoomUpdateForm
 from .models import Room, Reservation
 
 
@@ -32,41 +33,14 @@ class RoomDetailsView(View):
         return render(request, 'room_details.html', ctx)
 
 
-class RoomModifyView(View):
-    def get_room(self, **kwargs):
-        room = get_object_or_404(Room, pk=kwargs['room_id'])
-        return room
+class RoomUpdateView(UpdateView):
+    model = Room
+    form_class = RoomUpdateForm
+    template_name_suffix = '_update_form'
+    success_url = reverse_lazy('rooms_list')
 
-    def get(self, request, *args, **kwargs):
-        room = self.get_room(**kwargs)
-        ctx = {'room': room}
-        return render(request, 'room_modify.html', ctx)
-
-    def post(self, request, *args, **kwargs):
-        room = self.get_room(**kwargs)
-        name = request.POST.get('name')
-        capacity = request.POST.get('capacity')
-        capacity = int(capacity) if capacity else 0
-        projector = request.POST.get('projector') == 'on'
-
-        if not name:
-            ctx = {'message': 'Name can not be empty!'}
-            return render(request, 'room_modify.html', ctx)
-        if name != room.name and Room.objects.filter(name=name):
-            ctx = {'message': 'Conference room with this name is already exist!'}
-            return render(request, 'room_modify.html', ctx)
-        if len(name) > 255:
-            ctx = {'message': 'Room name is too long. Must be less than 255 characters!'}
-            return render(request, 'room_modify.html', ctx)
-        if capacity < 0:
-            ctx = {'message': 'Room capacity must not be less than zero!'}
-            return render(request, 'room_modify.html', ctx)
-
-        room.name = name
-        room.capacity = capacity
-        room.projector = projector
-        room.save()
-        return HttpResponseRedirect(reverse('rooms_list'))
+    def get_object(self, queryset=None):
+        return Room.objects.get(pk=self.kwargs['room_id'])
 
 
 class RoomDeleteView(View):
@@ -122,35 +96,10 @@ class RoomReserveView(View):
         return HttpResponseRedirect(reverse('rooms_list'))
 
 
-class AddNewRoomView(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, 'add_new_room.html')
-
-    def post(self, request, *args, **kwargs):
-        name = request.POST.get('name')
-        capacity = request.POST.get('capacity')
-        capacity = int(capacity) if capacity else 0
-        projector = request.POST.get('projector') == 'on'
-
-        if not name:
-            ctx = {'message': 'Name can not be empty!'}
-            return render(request, 'add_new_room.html', ctx)
-        if Room.objects.filter(name=name):
-            ctx = {'message': 'Conference room with this name is already exist!'}
-            return render(request, 'add_new_room.html', ctx)
-        if len(name) > 255:
-            ctx = {'message': 'Room name is too long. Must be less than 255 characters!'}
-            return render(request, 'add_new_room.html', ctx)
-        if capacity < 0:
-            ctx = {'message': 'Room capacity must not be less than zero!'}
-            return render(request, 'add_new_room.html', ctx)
-
-        Room.objects.create(
-            name=name,
-            capacity=int(capacity),
-            projector=projector
-        )
-        return HttpResponseRedirect(reverse('rooms_list'))
+class RoomCreateView(CreateView):
+    model = Room
+    form_class = RoomCreateForm
+    success_url = reverse_lazy('rooms_list')
 
 
 class SearchRoomView(View):
