@@ -51,20 +51,20 @@
         <form action="" method="GET">
             {% csrf_token %}
             <h3>Search conference room</h3>
-            <label for="{{ form.name.id_for_label }}">Room name:</label><br>
-            {{ form.room }}
-            <br><label for="{{ form.capacity.id_for_label }}">Room capacity:</label><br>
-            {{ form.capacity }}
-            <br><label for="{{ form.projector.id_for_label }}">Projector availability:</label>
-            {{ form.projector }}
-{#            <label for="name">Room name</label><br>#}
-{#            <input type="text" id="name" name="name" maxlength="255"><br><br>#}
-{##}
-{#            <label for="min_capacity">Minimum room capacity</label><br>#}
-{#            <input type="number" min="0" id="min_capacity" name="min_capacity"><br><br>#}
-{##}
-{#            <label for="projector">Projector availability</label>#}
-{#            <input type="checkbox" id="projector" name="projector"><br><br>#}
+{#            <label for="{{ form.name.id_for_label }}">Room name:</label><br>#}
+{#            {{ form.room }}#}
+{#            <br><label for="{{ form.capacity.id_for_label }}">Room capacity:</label><br>#}
+{#            {{ form.capacity }}#}
+{#            <br><label for="{{ form.projector.id_for_label }}">Projector availability:</label>#}
+{#            {{ form.projector }}#}
+            <label for="name">Room name</label><br>
+            <input type="text" id="name" name="name" maxlength="255"><br><br>
+
+            <label for="min_capacity">Minimum room capacity</label><br>
+            <input type="number" min="0" id="min_capacity" name="min_capacity"><br><br>
+
+            <label for="projector">Projector availability</label>
+            <input type="checkbox" id="projector" name="projector"><br><br>
 
             <br><input type="submit" value="Search">
         </form>

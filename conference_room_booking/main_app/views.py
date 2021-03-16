@@ -18,7 +18,7 @@ class RoomsListView(View):
             room.reserved = date.today() in reservation_dates
 
         ctx = {'rooms_list': rooms_list}
-        return render(request, 'rooms_list.html', ctx)
+        return render(request, 'main_app/rooms_list.html', ctx)
 
 
 class RoomDetailsView(FormView):
@@ -60,9 +60,15 @@ class RoomDeleteView(View):
 
 class RoomReserveView(CreateView):
     model = Reservation
-    form_class = ReservationCreateForm
     template_name = 'main_app/reservation_form.html'
+    form_class = ReservationCreateForm
     success_url = reverse_lazy('rooms_list')
+
+    def get_context_data(self, **kwargs):
+        room = get_object_or_404(Room, pk=self.kwargs['room_id'])
+        ctx = super().get_context_data(**kwargs)
+        ctx["room"] = room
+        return ctx
 
 
 class RoomCreateView(CreateView):
@@ -72,31 +78,33 @@ class RoomCreateView(CreateView):
     success_url = reverse_lazy('rooms_list')
 
 
-class SearchRoomFormView(FormView):
-    model = Room
-    form_class = SearchRoomForm
-    success_url = reverse_lazy('rooms_list')
+# class SearchRoomFormView(FormView):
+#     model = Room
+#     form_class = SearchRoomForm
+#     template_name = 'main_app/room_list.html'
+#     success_url = reverse_lazy('rooms_list')
 
-    # def get(self, request, *args, **kwargs):
-    #     rooms_list = Room.objects.all()
-    #     name = request.GET.get('name')
-    #     min_capacity = request.GET.get('min_capacity')
-    #     min_capacity = int(min_capacity) if min_capacity else 0
-    #     projector = request.GET.get('projector') == 'on'
-    #
-    #     if name:
-    #         rooms_list = rooms_list.filter(name=name)
-    #     if min_capacity:
-    #         rooms_list = rooms_list.filter(capacity__gte=min_capacity)
-    #     if projector:
-    #         rooms_list = rooms_list.filter(projector=projector)
-    #
-    #     for room in rooms_list:
-    #         reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
-    #         room.reserved = str(date.today()) in reservation_dates
-    #
-    #     ctx = {
-    #         'rooms_list': rooms_list,
-    #         'date': date.today()
-    #     }
-    #     return render(request, 'found_room.html', ctx)
+class SearchRoomView(View):
+    def get(self, request, *args, **kwargs):
+        rooms_list = Room.objects.all()
+        name = request.GET.get('name')
+        min_capacity = request.GET.get('min_capacity')
+        min_capacity = int(min_capacity) if min_capacity else 0
+        projector = request.GET.get('projector') == 'on'
+
+        if name:
+            rooms_list = rooms_list.filter(name=name)
+        if min_capacity:
+            rooms_list = rooms_list.filter(capacity__gte=min_capacity)
+        if projector:
+            rooms_list = rooms_list.filter(projector=projector)
+
+        for room in rooms_list:
+            reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
+            room.reserved = str(date.today()) in reservation_dates
+
+        ctx = {
+            'rooms_list': rooms_list,
+            'date': date.today()
+        }
+        return render(request, 'found_room.html', ctx)

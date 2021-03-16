@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 
 from main_app.views import (
-    RoomsListView, RoomDetailsView, RoomUpdateView, RoomDeleteView, RoomReserveView, RoomCreateView, SearchRoomFormView
+    RoomsListView, RoomDetailsView, RoomUpdateView, RoomDeleteView, RoomReserveView, RoomCreateView, SearchRoomView
 )
 
 
@@ -29,5 +29,5 @@ urlpatterns = [
     re_path(r'^room/delete/(?P<room_id>\d+)/$', RoomDeleteView.as_view(), name='room_delete'),
     re_path(r'^room/reserve/(?P<room_id>\d+)/$', RoomReserveView.as_view(), name='room_reserve'),
     re_path(r'^room/new/$', RoomCreateView.as_view(), name='add_new_room'),
-    re_path(r'^search/$', SearchRoomFormView.as_view(), name='search_room'),
+    re_path(r'^search/$', SearchRoomView.as_view(), name='search_room'),
 ]
