@@ -24,9 +24,3 @@ class ReservationCreateForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
         }
 
-
-class SearchRoomForm(forms.ModelForm):
-    class Meta:
-        model = Room
-        fields = ['name', 'capacity', 'projector']
-

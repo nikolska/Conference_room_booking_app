@@ -8,6 +8,7 @@
 <div align="center">
     <form action="" method="POST">
         {% csrf_token %}
+
         <h3>{{ room.name }} reservation</h3>
         <br><label for="{{ form.capacity.id_for_label }}">Date:</label><br>
         {{ form.date }}

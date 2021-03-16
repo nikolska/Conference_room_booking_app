@@ -48,15 +48,10 @@
     </div>
 
     <div align="center">
-        <form action="" method="GET">
+        <form action="search/" method="GET">
             {% csrf_token %}
             <h3>Search conference room</h3>
-{#            <label for="{{ form.name.id_for_label }}">Room name:</label><br>#}
-{#            {{ form.room }}#}
-{#            <br><label for="{{ form.capacity.id_for_label }}">Room capacity:</label><br>#}
-{#            {{ form.capacity }}#}
-{#            <br><label for="{{ form.projector.id_for_label }}">Projector availability:</label>#}
-{#            {{ form.projector }}#}
+
             <label for="name">Room name</label><br>
             <input type="text" id="name" name="name" maxlength="255"><br><br>
 

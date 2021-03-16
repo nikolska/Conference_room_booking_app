@@ -5,7 +5,7 @@ from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, FormView, CreateView, UpdateView
 
-from .forms import RoomCreateForm, RoomUpdateForm, ReservationCreateForm, SearchRoomForm
+from .forms import RoomCreateForm, RoomUpdateForm, ReservationCreateForm
 from .models import Room, Reservation
 
 
@@ -78,12 +78,6 @@ class RoomCreateView(CreateView):
     success_url = reverse_lazy('rooms_list')
 
 
-# class SearchRoomFormView(FormView):
-#     model = Room
-#     form_class = SearchRoomForm
-#     template_name = 'main_app/room_list.html'
-#     success_url = reverse_lazy('rooms_list')
-
 class SearchRoomView(View):
     def get(self, request, *args, **kwargs):
         rooms_list = Room.objects.all()
@@ -93,7 +87,7 @@ class SearchRoomView(View):
         projector = request.GET.get('projector') == 'on'
 
         if name:
-            rooms_list = rooms_list.filter(name=name)
+            rooms_list = rooms_list.filter(name__icontains=name)
         if min_capacity:
             rooms_list = rooms_list.filter(capacity__gte=min_capacity)
         if projector:
