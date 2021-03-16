@@ -5,11 +5,13 @@ from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, FormView, CreateView, UpdateView
 
-from .forms import RoomCreateForm, RoomUpdateForm, ReservationCreateForm
+from .forms import RoomCreateForm, RoomUpdateForm, ReservationCreateForm, RoomSearchForm
 from .models import Room, Reservation
 
 
 class RoomsListView(View):
+    form_class = RoomSearchForm
+
     def get(self, request, *args, **kwargs):
         rooms_list = get_list_or_404(Room.objects.order_by('name'))
 
@@ -17,7 +19,10 @@ class RoomsListView(View):
             reservation_dates = [reservation.date for reservation in room.reservation_set.all()]
             room.reserved = date.today() in reservation_dates
 
-        ctx = {'rooms_list': rooms_list}
+        ctx = {
+            'rooms_list': rooms_list,
+            'form': self.form_class()
+        }
         return render(request, 'main_app/rooms_list.html', ctx)
 
 
@@ -82,7 +87,7 @@ class SearchRoomView(View):
     def get(self, request, *args, **kwargs):
         rooms_list = Room.objects.all()
         name = request.GET.get('name')
-        min_capacity = request.GET.get('min_capacity')
+        min_capacity = request.GET.get('capacity')
         min_capacity = int(min_capacity) if min_capacity else 0
         projector = request.GET.get('projector') == 'on'
 

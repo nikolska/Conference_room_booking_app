@@ -52,16 +52,16 @@
             {% csrf_token %}
             <h3>Search conference room</h3>
 
-            <label for="name">Room name</label><br>
-            <input type="text" id="name" name="name" maxlength="255"><br><br>
+            <br><label for="{{ form.name.id_for_label }}">Room name:</label><br>
+            {{ form.name }}
 
-            <label for="min_capacity">Minimum room capacity</label><br>
-            <input type="number" min="0" id="min_capacity" name="min_capacity"><br><br>
+            <br><br><label for="{{ form.capacity.id_for_label }}">Room capacity:</label><br>
+            {{ form.capacity }}
 
-            <label for="projector">Projector availability</label>
-            <input type="checkbox" id="projector" name="projector"><br><br>
+            <br><br><label for="{{ form.projector.id_for_label }}">Projector availability:</label>
+            {{ form.projector }}
 
-            <br><input type="submit" value="Search">
+            <br><br><input type="submit" value="Search">
         </form>
     </div>
 </div>
